@@ -41,5 +41,13 @@ else
     protected override async Task OnInitAsync()
     {
         forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        while (true) {
+            forecasts = (await ForecastService.GetForecastAsync(DateTime.Now))
+                .Concat(forecasts ?? new WeatherForecast[0])
+                .Take(1000)
+                .ToArray();
+            StateHasChanged();
+            await Task.Delay(10);
+        };
     }
 }
